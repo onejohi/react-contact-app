@@ -1,4 +1,4 @@
-import { Link, Outlet, useLoaderData } from "react-router-dom";
+import { Link, Outlet, useLoaderData, Form, redirect, NavLink } from "react-router-dom";
 import { getContacts, createContact } from '../contacts'
 
 export async function loader() {
@@ -8,11 +8,11 @@ export async function loader() {
 
 export async function action() {
   const contact = await createContact()
-  return { contact }
+  return redirect(`/contacts/${contact.id}/edit`)
 }
 
 export default function Root() {
-  const { contacts } = useLoaderData()
+  const { contacts } = useLoaderData();
 
   return (
     <>
@@ -34,30 +34,45 @@ export default function Root() {
             <div className="sr-only" aria-live="polite"></div>
           </form>
 
-          <form method="POST">
+          <Form method="post">
             <button type="submit">New</button>
-          </form>
+          </Form>
         </div>
 
         <nav>
-          { contacts.length ? (
+          {contacts.length ? (
             <ul>
-              {contacts.map((contact) => {
+              {contacts.map((contact) => (
                 <li key={contact.id}>
-                  <Link to={`contacts/${contact.id}`}>
-                    {contact.first || contact.last ? (
-                      <> {contact.first} {contact.last} </>
-                    ) : (
-                      <i>No Name</i>
-                    )}
-                  </Link>
+                  <NavLink
+                    to={`contacts/${contact.id}`}
+                    className={({ isActive, isPending }) =>
+                      isActive
+                        ? "active"
+                        : isPending
+                        ? "pending"
+                        : ""
+                    }
+                  >
+                      {contact.first || contact.last ? (
+                        <>
+                          {contact.first} {contact.last}
+                        </>
+                      ) : (
+                        <i>No Name</i>
+                      )}{" "}
+                      {contact.favorite && <span>★</span>}
+                  </NavLink>
                 </li>
-              })}
+              ))}
             </ul>
           ) : (
-            <p> <i>No Contacts</i> </p>
+            <p>
+              <i>No contacts</i>
+            </p>
           )}
         </nav>
+
       </div>
 
       <div id="detail">

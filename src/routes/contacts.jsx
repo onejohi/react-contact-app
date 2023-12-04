@@ -1,14 +1,13 @@
-import { Form } from 'react-router-dom'
+import { Form, useLoaderData } from 'react-router-dom'
+import { getContact } from '../contacts'
+
+export async function loader({ params }) {
+  const contact = await getContact(params.contactId)
+  return { contact }
+}
 
 export default function Contact() {
-  const contact = {
-    first: 'Tony',
-    last: 'Onejohi',
-    avatar: 'https://ui-avatars.com/api/?name=Tony+Onejohi',
-    twitter: '@onejohi',
-    notes: 'I love myself',
-    favorite: true
-  }
+  const { contact } = useLoaderData()
 
   return (
     <div id="contact">
@@ -59,7 +58,7 @@ export default function Contact() {
   )
 }
 
-function Favorite({contact}) {
+function Favorite({ contact }) {
   let favorite = contact.favorite
 
   return (
