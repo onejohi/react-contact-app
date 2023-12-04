@@ -22,7 +22,7 @@ export default function Contact() {
               {contact.first} {contact.last}
             </>
           ) : (
-            <i>No Name</i>
+            <i>No Name / Should remove this</i>
           )} {" "}
 
           <Favorite contact={contact} />
